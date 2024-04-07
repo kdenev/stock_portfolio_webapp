@@ -1,8 +1,7 @@
-from yahooquery import Ticker
+from yahooquery import Ticker, search
 import pandas as pd
 
-t_object = Ticker(['AAPL'])
-
+t_object = Ticker(['APPL'])
 
 # Summary data
 ratios = ['previousClose', 'payoutRatio', 'beta', 'trailingPE', 'forwardPE', 'dividendYield']
@@ -14,8 +13,8 @@ fin_data = pd.DataFrame(t_object.all_financial_data())
 fin_data['year'] = fin_data.asOfDate.dt.strftime('%Y')
 fin_data_processed = fin_data.reset_index()[financial_items]
 # Financial data ratios
-t_object.financial_data
-
+fin_items_extra = ['targetMeanPrice', 'numberOfAnalystOpinions', 'recommendationKey']
+fin_data_extra = pd.DataFrame(t_object.financial_data).transpose()[fin_items_extra].reset_index().rename(columns={'index':'symbol'})
 
 # Key Ratios
 key_ratios = ['trailingEps', 'pegRatio', 'enterpriseToEbitda', 'priceToBook']
@@ -26,3 +25,6 @@ key_data = pd.DataFrame(t_object.key_stats).transpose()[key_ratios].reset_index(
 # Latest news for Apple 2023-08-14
 t_object.corporate_events.reset_index()
 t_object.news(5)
+
+# Try Search
+search("JP3305990008")

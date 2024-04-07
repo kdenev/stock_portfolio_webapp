@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block content %}
+    <!-- Main message -->
+    <div class="container col-xxl-8 px-4 py-5">
+        <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+          <div class="col-10 col-sm-8 col-lg-6">
+            <img src="{{ url_for('static', filename='assets/img/main_img.png') }}" class="d-block mx-lg-auto img-fluid" alt="Art Including Chart and Other elements">
+          </div>
+          <div class="col-lg-6">
+            <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3">Stockpicking at it's best! Create your portfolio.</h1>
+            <p class="lead">Pick from more than 300 stocks. More than 20 criteria available to pick your stocks and easily backtest agains the S&P.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+              <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Sign Up!</button>
+              <button type="button" class="btn btn-outline-secondary btn-lg px-4">Example</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- Data Table -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css /> -->
+    <div class="container">
+      <form method="post" action="{{ url_for('process_selection')}}" name="form1"> <!-- Form to submit selected rows -->
+        <table class="table table-striped" id="data">
+            <thead>
+                <tr>
+                    <th><button href="{{ url_for('sort_table')}}" onclick="updateData()" type="submit">Select</button></th> 
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>City</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td><input type="checkbox" name="selected_rows" value="{{ row['Name'] }}"></td> <!-- Checkbox for each row -->
+                    <td>{{ row['Name'] }}</td>
+                    <td>{{ row['Age'] }}</td>
+                    <td>{{ row['City'] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Process Selected</button> <!-- Submit button -->
+    </form>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+          <li class="page-item {% if page <= 1 %}disabled{% endif %}">
+              <a class="page-link" href="?page={{ page - 1 }}">Previous</a>
+          </li>
+          {% for p in range(1, total_pages + 1) %}
+          <li class="page-item {% if p == page %}active{% endif %}">
+              <a class="page-link" href="?page={{ p }}">{{ p }}</a>
+          </li>
+          {% endfor %}
+          <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
+              <a class="page-link" href="?page={{ page + 1 }}">Next</a>
+          </li>
+      </ul>
+    </nav>
+  </div>
+  <!-- <script>
+    // Save the current scroll position before the form is submitted or the page is navigated away from
+    window.addEventListener('beforeunload', function() {
+        localStorage.setItem('scrollPosition', window.scrollY);
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Restore the scroll position if it exists in localStorage
+        const savedScrollPosition = localStorage.getItem('scrollPosition');
+        if (savedScrollPosition) {
+            window.scrollTo(0, parseInt(savedScrollPosition));
+            localStorage.removeItem('scrollPosition'); // Remove the saved position after scrolling
+        }
+    });
+</script> -->
+{% endblock %}
