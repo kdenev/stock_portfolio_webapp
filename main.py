@@ -1,6 +1,10 @@
 from flask import Flask, abort, render_template, redirect, url_for, flash, request, jsonify
 from flask_bootstrap import Bootstrap5
 from dotenv import load_dotenv
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String, Text
+from database import db
 import os
 import numpy as np
 import pandas as pd
@@ -12,13 +16,12 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 # app.config['BOOTSTRAP_BOOTSWATCH_THEME'] = 'darkly'
 Bootstrap5(app)
 
-# Generate some random data
-data = {
-    'Name': [f'Person {i}' for i in range(100)],  # 100 entries
-    'Age': np.random.randint(18, 60, size=100),
-    'City': np.random.choice(['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix'], size=100),
-}
-df = pd.DataFrame(data)
+# DATA
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('SQLALCHEMY_DATABASE_URI')
+db.init_app(app)
+
+with app.app_context():
+    db.create_all()
 
 @app.route('/')
 def home():
