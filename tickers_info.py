@@ -7,20 +7,11 @@ import os
 # Load environment variables
 load_dotenv()
 
-#TODO
-# Download world index components from this link
-# https://www.ssga.com/se/en_gb/institutional/etfs/library-content/products/fund-data/etfs/emea/holdings-daily-emea-en-sppw-gy.xlsx
-#TODO
-# Use the search function to get the basic information for each stock
-#TODO
-# Create relational database with the available information
-
+# Declare constants
 ETF_COMPONETS_URL = os.environ['ETF_COMPONETS_URL']
 SEARCH_COLUMNS = ['exchange', 'shortname', 'symbol', 'longname']
 
-# response = search('US0378331005')
-# response['quotes']
-
+# Create a class to fetch the symbol data and create sql db
 class StockBase():
     def __init__(self):
         self.read_data()
@@ -35,15 +26,23 @@ class StockBase():
         return pd.DataFrame(search(isin)['quotes'])[SEARCH_COLUMNS]
     
     def compile_search_results(self):
-        for isin in self.etf_components['ISIN'][:5]:
-            row = self.search_info(isin)
-            row['isin'] = isin
-            self.search_df = pd.concat([self.search_df, row])
+        for i,isin in enumerate(self.etf_components['ISIN']):
+            try:
+                if i % 10 == 0:
+                    print(i)
+                row = self.search_info(isin)
+                row['isin'] = isin
+                row['id'] = i+1
+                self.search_df = pd.concat([self.search_df, row])
+            except:
+                print("Error", row['id'])
+                continue
         return self.search_df
     
     def write_to_db(self):
         self.search_df.to_sql('ticker_info', self.engine, if_exists='replace', index=False)
 
+# Fetch the data
 stock_info = StockBase()
 stock_info.compile_search_results()
 stock_info.write_to_db()
