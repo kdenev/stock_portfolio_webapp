@@ -1,4 +1,4 @@
-from yahooquery import Ticker, search
+from yahooquery import Ticker
 import pandas as pd
 
 t_object = Ticker(['APPL'])
@@ -25,6 +25,3 @@ key_data = pd.DataFrame(t_object.key_stats).transpose()[key_ratios].reset_index(
 # Latest news for Apple 2023-08-14
 t_object.corporate_events.reset_index()
 t_object.news(5)
-
-# Try Search
-search("JP3305990008")
