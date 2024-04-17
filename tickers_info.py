@@ -66,6 +66,14 @@ class StockBase(Ticker):
                     )
         self.ratios_data = financial_ratios.merge(key_ratios, on='symbol', how='inner')
         return self.ratios_data
+    
+    def fetch_fundamentals_data(self):
+        fundamentals_data = pd.DataFrame(self.all_financial_data())
+        fundamentals_data['year'] = fundamentals_data.asOfDate.dt.strftime('%Y')
+        fundamentals_data['NetDebt'] = fundamentals_data['TotalDebt'] - fundamentals_data['CashAndCashEquivalents']
+        self.fundamentals_data_processed = fundamentals_data.reset_index()[self.financial_data_columns]
+        return self.fundamentals_data_processed
+
         #TODO create time 2 new ralational databases. 
         # 1 for the discrete values
         # 2 for the continuos values(balance sheet information)
@@ -74,26 +82,4 @@ class StockBase(Ticker):
 stock_info = StockBase()
 stock_info.fetch_summary_details()
 stock_info.fetch_ratio_data()
-stock_info.summary_detail
-a = stock_info.fetch_details()
-summary_data = a.summary_detail
-summary_data_columns = ['previousClose', 'payoutRatio', 'beta', 'trailingPE', 'dividendYield']
-sumamry_profile_columns = ['industry', 'sector', 'fullTimeEmployees']
-# , 'forwardPE'
-pd.DataFrame(summary_data).transpose()[summary_data_columns].reset_index().rename(columns={'index':'symbol'})
-
-a = Ticker('AAPL')
-pd.DataFrame(a.summary_profile).T[['industry', 'sector', 'fullTimeEmployees']]
-financial_data_columns = ['symbol', 'year', 'TotalDebt', 'CashAndCashEquivalents', 'NetDebt', 'NormalizedEBITDA', 'NormalizedIncome']
-fin_data = pd.DataFrame(a.all_financial_data())
-fin_data['year'] = fin_data.asOfDate.dt.strftime('%Y')
-fin_data['NetDebt'] = fin_data['TotalDebt'] - fin_data['CashAndCashEquivalents']
-fin_data_processed = fin_data.reset_index()[financial_data_columns]
-fin_data_processed
-
-fin_items_extra = ['targetMeanPrice', 'numberOfAnalystOpinions', 'recommendationKey']
-fin_data_extra = pd.DataFrame(a.financial_data).transpose()[fin_items_extra].reset_index().rename(columns={'index':'symbol'})
-
-# Key Ratios
-key_ratios = ['trailingEps', 'pegRatio', 'enterpriseToEbitda', 'priceToBook']
-key_data = pd.DataFrame(a.key_stats).transpose()[key_ratios].reset_index().rename(columns={'index':'symbol'})
+stock_info.fetch_fundamentals_data()
