@@ -10,6 +10,9 @@ load_dotenv()
 # Declare constants
 ETF_COMPONETS_URL = os.environ['ETF_COMPONETS_URL']
 SELECT_COLUMNS = ['Id', 'Name', 'Ticker', 'Identifier']
+DB_RATIOS = "ratios"
+DB_FUNDAMENTALS = "fundamentals"
+DB_TICKER = "ticker_info"
 
 # Create a class to fetch the symbol data and create sql db
 class StockBase(Ticker):
@@ -78,8 +81,9 @@ class StockBase(Ticker):
         # 1 for the discrete values
         # 2 for the continuos values(balance sheet information)
 
+    def write_db_ratios(self):
+
+
 # Fetch the data
 stock_info = StockBase()
-stock_info.fetch_summary_details()
-stock_info.fetch_ratio_data()
-stock_info.fetch_fundamentals_data()
+
