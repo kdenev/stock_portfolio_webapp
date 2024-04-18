@@ -9,14 +9,8 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 # CONFIGURE TABLES
-class CompanyInfo(db.Model):
-    __tablename__ = "comp_info"
-    # 'id', 'exchange', 'shortname', 'symbol', 'longname', 'sector', 'industry'
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+class TickerInfo(db.Model):
+    __tablename__ = "ticker_info"
+    symbol: Mapped[str] = mapped_column(String, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
     isin: Mapped[str] = mapped_column(String, nullable=False)
-    symbol: Mapped[str] = mapped_column(String, nullable=False)
-    exchange: Mapped[str] = mapped_column(String, nullable=False)
-    shortname: Mapped[str] = mapped_column(String, nullable=False)
-    longname: Mapped[str] = mapped_column(String, nullable=False)
-    sector: Mapped[str] = mapped_column(String, nullable=False)
-    industry: Mapped[str] = mapped_column(String, nullable=False)

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text
-from database import db
+from database import db, TickerInfo
 import os
 import numpy as np
 import pandas as pd
@@ -22,6 +22,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+
 
 @app.route('/')
 def home():
