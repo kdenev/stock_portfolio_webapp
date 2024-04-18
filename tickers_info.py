@@ -20,7 +20,7 @@ class StockBase(Ticker):
         super().__init__(symbols, **kwargs)
         self.read_data()
         self.search_df = pd.DataFrame()
-        self.symbols = self.etf_components['Ticker'][:10]
+        self.symbols = self.etf_components['Ticker']
         self.summary_data_columns = ['previousClose', 'payoutRatio', 'beta', 'trailingPE', 'dividendYield']
         self.sumamry_profile_columns = ['industry', 'sector', 'fullTimeEmployees']
         self.financial_data_columns = ['symbol', 'year', 'TotalDebt', 'CashAndCashEquivalents', 'NetDebt', 'NormalizedEBITDA', 'NormalizedIncome']
@@ -77,13 +77,17 @@ class StockBase(Ticker):
         self.fundamentals_data_processed = fundamentals_data.reset_index()[self.financial_data_columns]
         return self.fundamentals_data_processed
 
-        #TODO create time 2 new ralational databases. 
-        # 1 for the discrete values
-        # 2 for the continuos values(balance sheet information)
-
     def write_db_ratios(self):
+        self.fetch_ratio_data()
+        self.fetch_summary_details()
+        self.ratios_data = self.ratios_data.merge(self.summary_data, on='symbol', how='inner')
+        self.write_to_db(self.ratios_data, DB_RATIOS)
 
+    def write_db_fundamentals(self):
+        self.fetch_fundamentals_data()
+        self.write_to_db(self.fundamentals_data_processed, DB_FUNDAMENTALS)
 
 # Fetch the data
 stock_info = StockBase()
-
+stock_info.write_db_fundamentals()
+stock_info.write_db_ratios()
