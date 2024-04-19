@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text
-from database import db, TickerInfo
+import sqlalchemy as sa
+from database import db, TickerInfo, Ratios
 import os
 import numpy as np
 import pandas as pd
@@ -27,24 +28,21 @@ with app.app_context():
 @app.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    sort_by = request.args.get('sort', 'Name')  # Default sort column
-    direction = request.args.get('direction', 'asc')  # Default sort direction
-    per_page = 25
-
-    # Sort the DataFrame
-    sorted_df = df.sort_values(by=sort_by, ascending=(direction == 'asc'))
-
-    start = (page - 1) * per_page
-    end = start + per_page
-    data = sorted_df.iloc[start:end].to_dict(orient='records')
-    total_pages = (len(df) + per_page - 1) // per_page
-
+    query = sa.select(Ratios)
+    data = db.paginate(query, page=page, per_page=40, error_out=False)
+    next_url = None
+    prev_url = None
+    if data.has_next:
+        next_url = url_for('home', page=data.next_num)
+    if data.has_prev:
+        prev_url = url_for('home', page=data.prev_num)
     return render_template('home.html'
-                           , data=data
+                           , data=data.items
+                           , column_names = query.subquery().columns.keys()
                            , page=page
-                           , total_pages=total_pages
-                           , sort_by=sort_by
-                           , direction=direction)
+                           , next_url=next_url
+                           , prev_url=prev_url
+                        )
 
 @app.route('/process_selection', methods=['POST'])
 def process_selection():

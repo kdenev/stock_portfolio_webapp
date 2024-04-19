@@ -18,58 +18,44 @@
     <!-- Data Table -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css /> -->
     <div class="container">
-      <form method="post" action="{{ url_for('process_selection')}}" name="form1"> <!-- Form to submit selected rows -->
         <table class="table table-striped" id="data">
             <thead>
                 <tr>
-                    <th><button href="{{ url_for('sort_table')}}" onclick="updateData()" type="submit">Select</button></th> 
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>City</th>
+                    {% for col in column_names %}
+                        <th>{{col.title()}}</th>
+                    {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for row in data %}
                 <tr>
-                    <td><input type="checkbox" name="selected_rows" value="{{ row['Name'] }}"></td> <!-- Checkbox for each row -->
-                    <td>{{ row['Name'] }}</td>
-                    <td>{{ row['Age'] }}</td>
-                    <td>{{ row['City'] }}</td>
+                    <td>{{ row.symbol }}</td>
+                    <td>{{ row.sector }}</td>
+                    <td>{{ row.industry }}</td>
+                    <td>{{ row.fulltimeemployees }}</td>
+                    <td>{{ row.targetmeanprice }}</td>
+                    <td>{{ row.numberofanalystopinions }}</td>
+                    <td>{{ row.recommendationkey }}</td>
+                    <td>{{ row.trailingeps }}</td>
+                    <td>{{ row.pegratio }}</td>
+                    <td>{{ row.enterprisetoebitda }}</td>
+                    <td>{{ row.enterprisetorevenue }}</td>
+                    <td>{{ row.pricetobook }}</td>
+                    <td>{{ row.payoutratio }}</td>
+                    <td>{{ row.beta }}</td>
+                    <td>{{ row.trailingpe }}</td>
+                    <td>{{ row.dividendyield }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <button type="submit" class="btn btn-primary">Process Selected</button> <!-- Submit button -->
-    </form>
-    <nav aria-label="Page navigation example">
-      <ul class="pagination">
-          <li class="page-item {% if page <= 1 %}disabled{% endif %}">
-              <a class="page-link" href="?page={{ page - 1 }}">Previous</a>
-          </li>
-          {% for p in range(1, total_pages + 1) %}
-          <li class="page-item {% if p == page %}active{% endif %}">
-              <a class="page-link" href="?page={{ p }}">{{ p }}</a>
-          </li>
-          {% endfor %}
-          <li class="page-item {% if page >= total_pages %}disabled{% endif %}">
-              <a class="page-link" href="?page={{ page + 1 }}">Next</a>
-          </li>
-      </ul>
-    </nav>
+        <nav>
+        {% if prev_url %}
+          <a href="{{ prev_url }}">Prev</a>
+        {% endif %}
+        {% if next_url %}
+          <a href="{{ next_url }}">Next</a>
+        {% endif %}
+        </nav>
   </div>
-  <!-- <script>
-    // Save the current scroll position before the form is submitted or the page is navigated away from
-    window.addEventListener('beforeunload', function() {
-        localStorage.setItem('scrollPosition', window.scrollY);
-    });
-
-    document.addEventListener('DOMContentLoaded', function() {
-        // Restore the scroll position if it exists in localStorage
-        const savedScrollPosition = localStorage.getItem('scrollPosition');
-        if (savedScrollPosition) {
-            window.scrollTo(0, parseInt(savedScrollPosition));
-            localStorage.removeItem('scrollPosition'); // Remove the saved position after scrolling
-        }
-    });
-</script> -->
 {% endblock %}
