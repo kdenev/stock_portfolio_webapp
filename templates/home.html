@@ -18,44 +18,33 @@
     <!-- Data Table -->
     <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css /> -->
     <div class="container">
-        <table class="table table-striped" id="data">
+        <table class="table table-striped" 
+              id="table" 
+              data-toolbar = "#toolbar"
+              data-pagination="true" 
+              data-search="true"
+              data-show-search-clear-button="true"
+              data-show-multi-sort="true"
+              data-show-multi-sort-button="true"
+              data-click-to-select="true"
+              data-show-columns="true">
+              <!-- data-show-toggle="true" -->
             <thead>
                 <tr>
                     {% for col in column_names %}
-                        <th>{{col.title()}}</th>
+                        <th data-field="{{ col }}" data-sortable="true">{{col.title()}}</th>
                     {% endfor %}
                 </tr>
             </thead>
             <tbody>
                 {% for row in data %}
                 <tr>
-                    <td>{{ row.symbol }}</td>
-                    <td>{{ row.sector }}</td>
-                    <td>{{ row.industry }}</td>
-                    <td>{{ row.fulltimeemployees }}</td>
-                    <td>{{ row.targetmeanprice }}</td>
-                    <td>{{ row.numberofanalystopinions }}</td>
-                    <td>{{ row.recommendationkey }}</td>
-                    <td>{{ row.trailingeps }}</td>
-                    <td>{{ row.pegratio }}</td>
-                    <td>{{ row.enterprisetoebitda }}</td>
-                    <td>{{ row.enterprisetorevenue }}</td>
-                    <td>{{ row.pricetobook }}</td>
-                    <td>{{ row.payoutratio }}</td>
-                    <td>{{ row.beta }}</td>
-                    <td>{{ row.trailingpe }}</td>
-                    <td>{{ row.dividendyield }}</td>
+                    {% for col in column_names %}
+                        <td>{{ row[col] }}</td>
+                    {% endfor %}
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-        <nav>
-        {% if prev_url %}
-          <a href="{{ prev_url }}">Prev</a>
-        {% endif %}
-        {% if next_url %}
-          <a href="{{ next_url }}">Next</a>
-        {% endif %}
-        </nav>
   </div>
 {% endblock %}

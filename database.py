@@ -18,8 +18,8 @@ class TickerInfo(db.Model):
 class Ratios(db.Model):
     __tablename__ = "ratios"
     symbol: Mapped[str] = mapped_column(String, primary_key=True)
-    industry: Mapped[str] = mapped_column(String, nullable=True)
     sector: Mapped[str] = mapped_column(String, nullable=True)
+    industry: Mapped[str] = mapped_column(String, nullable=True)
     fulltimeemployees: Mapped[str] = mapped_column(String, nullable=True)
     targetmeanprice: Mapped[float] = mapped_column(Float, nullable=True)
     numberofanalystopinions: Mapped[int] = mapped_column(Integer, nullable=True)

@@ -28,37 +28,29 @@ with app.app_context():
 @app.route('/')
 def home():
     page = request.args.get('page', 1, type=int)
-    query = sa.select(Ratios)
-    data = db.paginate(query, page=page, per_page=40, error_out=False)
-    next_url = None
-    prev_url = None
-    if data.has_next:
-        next_url = url_for('home', page=data.next_num)
-    if data.has_prev:
-        prev_url = url_for('home', page=data.prev_num)
+    sort_var = request.args.get('sort_var', None, type=str)
+    query = sa.select(Ratios).order_by(sort_var)
+    data = db.session.execute(query).scalars()
+    # next_url = None
+    # prev_url = None
+    # if data.has_next:
+    #     next_url = url_for('home', page=data.next_num)
+    # if data.has_prev:
+    #     prev_url = url_for('home', page=data.prev_num)
     return render_template('home.html'
-                           , data=data.items
+                           , data=data
                            , column_names = query.subquery().columns.keys()
                            , page=page
-                           , next_url=next_url
-                           , prev_url=prev_url
+                        #    , next_url=next_url
+                        #    , prev_url=prev_url
                         )
 
-@app.route('/process_selection', methods=['POST'])
-def process_selection():
-    selected_rows = request.form.getlist('selected_rows')  # Retrieves all selected row identifiers
-    # Process the selected rows as needed
-    print(selected_rows)  # For demonstration, just print the selected rows
-    
-    return redirect(url_for('home'))  # Redirect back to the table view or to another page
-
-@app.route('/sort_table', methods=['POST', 'GET'])
-def sort_table():
-    print("Table sorting processe!")
-    if request.method == 'POST':
-        print('In post!')
-        print(request.form['form1'])
-    return redirect(url_for('home'))
+@app.route('/sort_page', methods=['POST', 'GET'])
+def sort_page():
+    sort_var = request.args.get('sort_var', None, type=str)
+    data = request.args.get('data', None, type=str)
+    print(data[4])
+    return redirect(url_for('home', data=data))
 
 
 if __name__ == "__main__":
