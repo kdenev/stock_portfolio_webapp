@@ -15,9 +15,20 @@
           </div>
         </div>
       </div>
-    <!-- Data Table -->
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css /> -->
     <div class="container">
+      <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          Sector
+        </button>
+        <ul class="dropdown-menu">
+          {% for sector in sectors %}
+              <li><a class="dropdown-item" href="{{ url_for('sector_filter', sector = sector) }}">{{ sector }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+    <div class="container">
+        <button class="btn btn-secondary" id="btn-clear">Clear</button>
         <table class="table table-striped" 
               id="table" 
               data-toolbar = "#toolbar"
@@ -27,12 +38,17 @@
               data-show-multi-sort="true"
               data-show-multi-sort-button="true"
               data-click-to-select="true"
-              data-show-columns="true">
+              data-show-columns="true"
+              data-filter-control="true"
+              data-show-search-clear-button = "true"
+              data-filter-control-visible="true">
               <!-- data-show-toggle="true" -->
             <thead>
                 <tr>
                     {% for col in column_names %}
-                        <th data-field="{{ col }}" data-sortable="true">{{col.title()}}</th>
+                        <th data-field="{{ col }}" data-sortable="true">
+                          {{col.title()}}
+                        </th>
                     {% endfor %}
                 </tr>
             </thead>

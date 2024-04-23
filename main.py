@@ -26,23 +26,23 @@ with app.app_context():
 
 
 @app.route('/')
-def home():
+def home(data=None):
     page = request.args.get('page', 1, type=int)
     sort_var = request.args.get('sort_var', None, type=str)
+    sector = request.args.get('sector', None, type=str)
     query = sa.select(Ratios).order_by(sort_var)
+    column_names = query.subquery().columns.keys()
+    if sector:
+        query = sa.select(Ratios).where(Ratios.sector == sector)
+        data = db.session.execute(query).scalars()
     data = db.session.execute(query).scalars()
-    # next_url = None
-    # prev_url = None
-    # if data.has_next:
-    #     next_url = url_for('home', page=data.next_num)
-    # if data.has_prev:
-    #     prev_url = url_for('home', page=data.prev_num)
+    sector_query = sa.select(sa.distinct(Ratios.sector))
+    sectors = db.session.execute(sector_query).scalars()
     return render_template('home.html'
                            , data=data
-                           , column_names = query.subquery().columns.keys()
+                           , column_names = column_names
                            , page=page
-                        #    , next_url=next_url
-                        #    , prev_url=prev_url
+                           , sectors = sectors
                         )
 
 @app.route('/sort_page', methods=['POST', 'GET'])
@@ -52,6 +52,14 @@ def sort_page():
     print(data[4])
     return redirect(url_for('home', data=data))
 
+@app.route('/sector_filter', methods=['POST', 'GET'])
+def sector_filter():
+    sector = request.args.get('sector', None, type=str)
+    return redirect(
+                    url_for('home'
+                            , sector=sector
+                        )
+                )
 
 if __name__ == "__main__":
     app.run(debug=True, port=5033)
