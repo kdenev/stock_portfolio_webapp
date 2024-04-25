@@ -3,9 +3,10 @@ $(function () {
 })
 
 // $(function () {
-//   $("#sector-filter").on('change', function (e) {
+//   $("#sector-filter").on('click', function (e) {
 //     e.preventDefault();
 //     var sector = $(this).val();
+//     console.log(sector)
 //     $.ajax({
 //       type: "POST",
 //       url: "/sector_filter",

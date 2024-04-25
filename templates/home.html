@@ -1,4 +1,5 @@
 {% extends "base.html" %} {% block content %}
+{% from "bootstrap5/form.html" import render_form %}
     <!-- Main message -->
     <div class="container col-xxl-8 px-4 py-5">
         <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
@@ -15,34 +16,105 @@
           </div>
         </div>
       </div>
-    <div class="container">
+      <div class="container">
+        <div class="row">
+          <div class="col-8">
+            <div class="container">
+              <form method="POST">
+                {{ form.csrf_token  }}
+                {{ form.hidden_tag() }}
+                <!-- Row 1 -->
+                <div class="row">
+                  <div class="col-12 col-md-8">
+                      <!-- Sector -->
+                      <div class="form-group">
+                          {{ form.sector.label(class="form-control-label") }}
+                          {{ form.sector(class="form-control") }}
+                      </div>
+                  </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.pe_ratio.label(class="form-control-label") }}
+                      {{ form.pe_ratio(class="form-control") }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.eps.label(class="form-control-label") }}
+                      {{ form.eps(class="form-control") }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.ev_ebitda.label(class="form-control-label") }}
+                      {{ form.ev_ebitda(class="form-control") }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.ev_revenue.label(class="form-control-label") }}
+                      {{ form.ev_revenue(class="form-control") }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.peg.label(class="form-control-label") }}
+                      {{ form.peg(class="form-control") }}
+                  </div>
+                </div>
+                <div class="col-12 col-md-4">
+                  <div class="form-group">
+                      {{ form.div_yield.label(class="form-control-label") }}
+                      {{ form.div_yield(class="form-control") }}
+                  </div>
+                </div>
+              </div>
+              <!-- Submit button -->
+              <div class="form-group mt-3">
+                  {{ form.submit(class="btn btn-secondary") }}
+              </div>
+              </form>
+            </div>
+          </div>
+          <div class="col-4">
+              <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Earum esse voluptates officiis quod repellat, vitae eveniet sit quae quos qui! Ex impedit quas debitis voluptatibus. Quos distinctio magni fugiat deleniti?</p>
+          </div>
+        </div>
+      </div>
+      
+    <!-- <div class="container">
       <div class="dropdown">
         <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
           Sector
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu"  id="sector-filter">
           {% for sector in sectors %}
-              <li><a class="dropdown-item" href="{{ url_for('sector_filter', sector = sector) }}">{{ sector }}</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('home', sector = sector) }}">{{ sector }}</a></li>
           {% endfor %}
         </ul>
-      </div>
+      </div> -->
     </div>
     <div class="container">
-        <button class="btn btn-secondary" id="btn-clear">Clear</button>
         <table class="table table-striped" 
               id="table" 
               data-toolbar = "#toolbar"
               data-pagination="true" 
               data-search="true"
               data-show-search-clear-button="true"
-              data-show-multi-sort="true"
-              data-show-multi-sort-button="true"
               data-click-to-select="true"
               data-show-columns="true"
               data-filter-control="true"
               data-show-search-clear-button = "true"
               data-filter-control-visible="true">
               <!-- data-show-toggle="true" -->
+              <!-- data-show-multi-sort="true"
+              data-show-multi-sort-button="true" -->
             <thead>
                 <tr>
                     {% for col in column_names %}

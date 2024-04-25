@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String, Text
 import sqlalchemy as sa
 from database import db, TickerInfo, Ratios
+from forms import FilterTable
 import os
 import numpy as np
 import pandas as pd
@@ -26,7 +27,10 @@ with app.app_context():
 
 
 @app.route('/')
-def home(data=None):
+def home():
+    form = FilterTable()
+    if form.validate_on_submit():
+        print('Form submitted')
     page = request.args.get('page', 1, type=int)
     sort_var = request.args.get('sort_var', None, type=str)
     sector = request.args.get('sector', None, type=str)
@@ -43,23 +47,16 @@ def home(data=None):
                            , column_names = column_names
                            , page=page
                            , sectors = sectors
+                           , form=form
                         )
-
-@app.route('/sort_page', methods=['POST', 'GET'])
-def sort_page():
-    sort_var = request.args.get('sort_var', None, type=str)
-    data = request.args.get('data', None, type=str)
-    print(data[4])
-    return redirect(url_for('home', data=data))
 
 @app.route('/sector_filter', methods=['POST', 'GET'])
 def sector_filter():
     sector = request.args.get('sector', None, type=str)
-    return redirect(
-                    url_for('home'
-                            , sector=sector
-                        )
-                )
+    query = sa.select(Ratios).where(Ratios.sector == sector)
+    data = db.session.execute(query).__dict__
+    print(data)
+    return data
 
 if __name__ == "__main__":
     app.run(debug=True, port=5033)
